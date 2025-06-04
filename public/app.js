@@ -1,310 +1,229 @@
-  document.addEventListener('DOMContentLoaded', () => {
-      const csvUrl = 'data/JR_Sakai_Line_Timetable.csv';
-      const toggleBtn = document.getElementById('toggle-direction');
-      const routeTitle = document.getElementById('route-title');
-      const travelTimeEl = document.getElementById('travel-time');
-      const trainsList = document.getElementById('trains-list');
-      const datePicker = document.getElementById('date-picker');
-      const timePicker = document.getElementById('time-picker');
-      const lineSelect = document.getElementById('line-select');
+document.addEventListener('DOMContentLoaded', () => {
+  const csvUrl = 'data/JR_Sakai_Line_Timetable.csv';
+  const toggleBtn = document.getElementById('toggle-direction');
+  const routeTitle = document.getElementById('route-title');
+  const trainsList = document.getElementById('trains-list');
+  // const datePicker = document.getElementById('date-picker');
+  // const timePicker = document.getElementById('time-picker');
+  // const lineSelect = document.getElementById('line-select');  // убрали
 
-      // Два массива: forward (Yonago → Sakaiminato) и backward (Sakaiminato → Yonago)
-      let trainsForward = [];
-      let trainsBackward = [];
+  let trainsForward = [];
+  let trainsBackward = [];
+  let showForward = true;
 
-      // true = показывать forward, false = backward
-      let showForward = true;
+  function parseBothDirections(rawRows) {
+    const result = { forward: [], backward: [] };
+    const dateString = rawRows[1][0]?.trim() || '';
+    const fareMatch = rawRows[3][0].split(':')[1]?.trim() || '';
+    const fareString = fareMatch;
 
-      // Разбирает «сырые» строки CSV и возвращает объект вида:
-      // { forward: [ { trainId, date, fare, direction, stops[...] }, … ],
-      //   backward: [ … ] }
-      function parseBothDirections(rawRows) {
-        const result = {
-          forward: [],
-          backward: []
-        };
+    let headerIndexForward = -1;
+    let headerIndexBackward = -1;
+    let foundSeparator = false;
 
-        // 1) Считываем дату и базовый тариф (будем один и тот же для обеих сторон)
-        const dateString = rawRows[1][0]?.trim() || '';
-        const fareMatch = rawRows[3][0].split(':')[1]?.trim() || '';
-        const fareString = fareMatch;
-
-        // 2) Найдём индексы, где начинаются блоки:
-        //    - headerIndexForward: row[ i ][0] === 'km' и далее номера поездов для направления Sakaiminato→Yonago
-        //    - headerIndexBackward: найти после разделителя 'Yonago-Sakaiminato'
-        let headerIndexForward = -1;
-        let headerIndexBackward = -1;
-        let foundSeparator = false;
-
-        for (let i = 0; i < rawRows.length; i++) {
-          const row0 = rawRows[i][0]?.trim() ?? '';
-          if (!foundSeparator) {
-            // пока не встретили «Yonago-Sakaiminato», ищем первый заголовок
-            if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
-              headerIndexForward = i;
-            }
-            if (rawRows[i][0]?.toString().startsWith('Yonago-Sakaiminato')) {
-              foundSeparator = true;
-            }
-          } else {
-            // после того, как встретили «Yonago-Sakaiminato», ищем второй заголовок
-            if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
-              headerIndexBackward = i;
-              break;
-            }
-          }
+    for (let i = 0; i < rawRows.length; i++) {
+      const row0 = rawRows[i][0]?.trim() ?? '';
+      if (!foundSeparator) {
+        if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
+          headerIndexForward = i;
         }
+        if (rawRows[i][0]?.toString().startsWith('Yonago-Sakaiminato')) {
+          foundSeparator = true;
+        }
+      } else {
+        if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
+          headerIndexBackward = i;
+          break;
+        }
+      }
+    }
 
-        // Если не нашли хотя бы один из них — возвращаем пустые списки
-        if (headerIndexForward < 0) return result;
+    if (headerIndexForward < 0) return result;
 
-        // Helper: соберём список поездов одного направления (из headerIndex, пока не встретится пустая строка или новый разделитель)
-        function buildOneDirection(startIndex) {
-          const headerRow = rawRows[startIndex];
-          // trainIds начинаются с колонки index = 3
-          const trainIds = headerRow.slice(3).filter(cell => cell && cell.trim() !== '');
+    function buildOneDirection(startIndex) {
+      const headerRow = rawRows[startIndex];
+      const trainIds = headerRow.slice(3).filter(cell => cell && cell.trim() !== '');
+      const stationRows = [];
+      for (let j = startIndex + 1; j < rawRows.length; j++) {
+        const r0 = rawRows[j][0]?.toString() || '';
+        if (!r0.trim()) break;
+        if (r0.startsWith('Yonago-Sakaiminato') || r0.startsWith('Sakaiminato-Yonago')) break;
+        stationRows.push(rawRows[j]);
+      }
 
-          // Собираем станции: начиная с rawRows[startIndex + 1], пока не встретится пустая row[0] или строчка с 'Yonago-Sakaiminato'
-          const stationRows = [];
-          for (let j = startIndex + 1; j < rawRows.length; j++) {
-            const r0 = rawRows[j][0]?.toString() || '';
-            if (!r0.trim()) break;
-            if (r0.startsWith('Yonago-Sakaiminato') || r0.startsWith('Sakaiminato-Yonago')) break;
-            stationRows.push(rawRows[j]);
-          }
+      const trains = trainIds.map(tid => ({
+        trainId: tid.trim(),
+        date: dateString,
+        fare: fareString,
+        direction: '', 
+        stops: []
+      }));
 
-          // Создаём массив объектов поездов
-          const trains = trainIds.map((tid) => ({
-            trainId: tid.trim(),
-            date: dateString,
-            fare: fareString,
-            direction: '', // заполним позже
-            stops: []      // будем класть {km, stationJP, stationEN, time}
-          }));
-
-          // Добавляем станции
-          stationRows.forEach((row) => {
-            const km = row[0]?.trim();
-            const stationJP = row[1]?.trim();
-            const stationEN = row[2]?.trim();
-            trainIds.forEach((tid, idx) => {
-              const timeValue = row[3 + idx]?.trim();
-              if (timeValue && stationEN) {
-                trains[idx].stops.push({
-                  km: km,
-                  stationJP: stationJP,
-                  stationEN: stationEN,
-                  time: timeValue
-                });
-              }
+      stationRows.forEach(row => {
+        const km = row[0]?.trim();
+        const stationJP = row[1]?.trim();
+        const stationEN = row[2]?.trim();
+        trainIds.forEach((tid, idx) => {
+          const timeValue = row[3 + idx]?.trim();
+          if (timeValue && stationEN) {
+            trains[idx].stops.push({
+              km: km,
+              stationJP: stationJP,
+              stationEN: stationEN,
+              time: timeValue
             });
-          });
-
-          return trains;
-        }
-
-        // 3) Заполняем trainsBackward (Sakaiminato→Yonago), если нашли headerIndexForward
-        trainsBackward = buildOneDirection(headerIndexForward);
-        // Установим direction для всех backward
-        trainsBackward.forEach(t => t.direction = 'Sakaiminato → Yonago');
-
-        // 4) Если есть headerIndexBackward, заполняем trainsForward (Yonago→Sakaiminato)
-        if (headerIndexBackward >= 0) {
-          trainsForward = buildOneDirection(headerIndexBackward);
-          trainsForward.forEach(t => t.direction = 'Yonago → Sakaiminato');
-        }
-
-        return {
-          forward: trainsForward,
-          backward: trainsBackward
-        };
-      }
-
-      // Рендерит список поездов (массив trainObjects)
-      function renderTrains(trainsArray) {
-        trainsList.innerHTML = '';
-        if (!trainsArray.length) {
-          trainsList.innerHTML = '<div class="text-danger">Рейсов не найдено.</div>';
-          return;
-        }
-
-        let lastHourMarker = null;
-        trainsArray.forEach((train) => {
-          const firstStopTime = train.stops[0]?.time || '00:00';
-          const [h0, ] = firstStopTime.split(':').map(Number);
-          const hourLabel = h0.toString().padStart(2, '0') + ':00';
-
-          if (hourLabel !== lastHourMarker) {
-            const markerEl = document.createElement('div');
-            markerEl.className = 'time-marker';
-            markerEl.textContent = hourLabel;
-            trainsList.appendChild(markerEl);
-            lastHourMarker = hourLabel;
           }
-
-          const trainRow = document.createElement('div');
-          trainRow.className = 'train-row';
-
-          const headerRow = document.createElement('div');
-          headerRow.className = 'header-row';
-
-          const infoDiv = document.createElement('div');
-          infoDiv.className = 'train-info';
-
-          const departureTime = train.stops[0]?.time || '--:--';
-          const arrivalTime = train.stops[train.stops.length - 1]?.time || '--:--';
-          let durMinutes = NaN;
-          if (departureTime.includes(':') && arrivalTime.includes(':')) {
-            const [h1, m1] = departureTime.split(':').map(Number);
-            const [h2, m2] = arrivalTime.split(':').map(Number);
-            let d = (h2 * 60 + m2) - (h1 * 60 + m1);
-            if (d < 0) d += 24 * 60;
-            durMinutes = d;
-          }
-
-          const timesEl = document.createElement('div');
-          timesEl.className = 'train-times';
-          timesEl.textContent =
-            `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
-          infoDiv.appendChild(timesEl);
-
-          const lineEl = document.createElement('div');
-          lineEl.className = 'train-line';
-          lineEl.textContent = `${train.trainId} – ${train.fare} (${train.direction})`;
-          infoDiv.appendChild(lineEl);
-
-          headerRow.appendChild(infoDiv);
-
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-sm btn-outline-primary btn-stops';
-          btn.type = 'button';
-          btn.textContent = 'Остановки';
-          headerRow.appendChild(btn);
-
-          trainRow.appendChild(headerRow);
-
-          const stopsDiv = document.createElement('div');
-          stopsDiv.className = 'stops-list';
-
-          // Строим таблицу остановок с двумя столбцами StationJP + StationEN
-          let tableHtml = `
-            <table class="table table-sm mb-0">
-              <thead>
-                <tr>
-                  <th style="width: 10%;">Km</th>
-                  <th style="width: 30%;">Station (JP)</th>
-                  <th style="width: 30%;">Station (EN)</th>
-                  <th style="width: 30%;">Time</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          train.stops.forEach((stop) => {
-            tableHtml += `
-              <tr>
-                <td>${stop.km}</td>
-                <td>${stop.stationJP}</td>
-                <td>${stop.stationEN}</td>
-                <td>${stop.time}</td>
-              </tr>
-            `;
-          });
-          tableHtml += `
-              </tbody>
-            </table>
-          `;
-          stopsDiv.innerHTML = tableHtml;
-          trainRow.appendChild(stopsDiv);
-
-          let isOpen = false;
-          headerRow.addEventListener('click', () => {
-            isOpen = !isOpen;
-            stopsDiv.style.display = isOpen ? 'block' : 'none';
-          });
-
-          trainsList.appendChild(trainRow);
         });
+      });
+
+      return trains;
+    }
+
+    trainsBackward = buildOneDirection(headerIndexForward);
+    trainsBackward.forEach(t => t.direction = 'Sakaiminato → Yonago');
+
+    if (headerIndexBackward >= 0) {
+      trainsForward = buildOneDirection(headerIndexBackward);
+      trainsForward.forEach(t => t.direction = 'Yonago → Sakaiminato');
+    }
+
+    return { forward: trainsForward, backward: trainsBackward };
+  }
+
+  function renderTrains(trainsArray) {
+    trainsList.innerHTML = '';
+    if (!trainsArray.length) {
+      trainsList.innerHTML = '<div class="text-danger">Рейсов не найдено.</div>';
+      return;
+    }
+
+    let lastHourMarker = null;
+    trainsArray.forEach(train => {
+      const firstStopTime = train.stops[0]?.time || '00:00';
+      const [h0] = firstStopTime.split(':').map(Number);
+      const hourLabel = h0.toString().padStart(2, '0') + ':00';
+
+      if (hourLabel !== lastHourMarker) {
+        const markerEl = document.createElement('div');
+        markerEl.className = 'time-marker';
+        markerEl.textContent = hourLabel;
+        trainsList.appendChild(markerEl);
+        lastHourMarker = hourLabel;
       }
 
-      // === Шаг 1: Загружаем CSV и парсим оба направления ===
-      Papa.parse(csvUrl, {
-        download: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          const raw = results.data;
-          const { forward, backward } = parseBothDirections(raw);
+      const trainRow = document.createElement('div');
+      trainRow.className = 'train-row';
 
-          trainsForward = forward;
-          trainsBackward = backward;
+      const headerRow = document.createElement('div');
+      headerRow.className = 'header-row';
 
-          // Изначально показываем Yonago → Sakaiminato (forward)
-          showForward = true;
-          routeTitle.textContent = 'Yonago → Sakaiminato';
-          travelTimeEl.textContent = 'Required time: JR Sakai Line – 44 min ~';
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'train-info';
 
-          // Заполняем селектор trainId для forward
-          fillTrainSelect(trainsForward);
-
-          // Рендерим forward
-          renderTrains(trainsForward);
-        },
-        error: function(err) {
-          trainsList.innerHTML = `<div class="text-danger">Ошибка загрузки CSV: ${err.message}</div>`;
-        }
-      });
-
-      // Заполнить <select> trainId опциями из массива trains
-      function fillTrainSelect(trains) {
-        // Сначала убрать все, кроме «All»
-        lineSelect.innerHTML = '<option value="all">All</option>';
-        trains.forEach(train => {
-          const opt = document.createElement('option');
-          opt.value = train.trainId;
-          opt.textContent = train.trainId;
-          lineSelect.appendChild(opt);
-        });
+      const departureTime = train.stops[0]?.time || '--:--';
+      const arrivalTime = train.stops[train.stops.length - 1]?.time || '--:--';
+      let durMinutes = NaN;
+      if (departureTime.includes(':') && arrivalTime.includes(':')) {
+        const [h1, m1] = departureTime.split(':').map(Number);
+        const [h2, m2] = arrivalTime.split(':').map(Number);
+        let d = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (d < 0) d += 24 * 60;
+        durMinutes = d;
       }
 
-      // === Шаг 2: Переключение направления по нажатию «Opposite Direction» ===
-      toggleBtn.addEventListener('click', () => {
-        showForward = !showForward;
-        if (showForward) {
-          routeTitle.textContent = 'Yonago → Sakaiminato';
-          travelTimeEl.textContent = 'Required time: JR Sakai Line – 44 min ~';
-          fillTrainSelect(trainsForward);
-          renderTrains(trainsForward);
-        } else {
-          routeTitle.textContent = 'Sakaiminato → Yonago';
-          travelTimeEl.textContent = 'Required time: JR Sakai Line – 44 min ~';
-          fillTrainSelect(trainsBackward);
-          renderTrains(trainsBackward);
-        }
+      const timesEl = document.createElement('div');
+      timesEl.className = 'train-times';
+      timesEl.textContent = `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
+      infoDiv.appendChild(timesEl);
+
+      const lineEl = document.createElement('div');
+      lineEl.className = 'train-line';
+      lineEl.textContent = `${train.trainId} – ${train.fare} (${train.direction})`;
+      infoDiv.appendChild(lineEl);
+
+      headerRow.appendChild(infoDiv);
+
+      // Привязываем разворачивание СТОЛЬКО к кнопке, а не к headerRow
+      const btn = document.createElement('button');
+      btn.className = 'btn btn-sm btn-outline-primary btn-stops';
+      btn.type = 'button';
+      btn.textContent = 'Stops';
+      headerRow.appendChild(btn);
+
+      trainRow.appendChild(headerRow);
+
+      const stopsDiv = document.createElement('div');
+      stopsDiv.className = 'stops-list';
+
+      let tableHtml = `
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th style="width: 10%;">Km</th>
+              <th style="width: 30%;">Station (JP)</th>
+              <th style="width: 30%;">Station (EN)</th>
+              <th style="width: 30%;">Time</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      train.stops.forEach(stop => {
+        tableHtml += `
+          <tr>
+            <td>${stop.km}</td>
+            <td>${stop.stationJP}</td>
+            <td>${stop.stationEN}</td>
+            <td>${stop.time}</td>
+          </tr>
+        `;
+      });
+      tableHtml += `
+          </tbody>
+        </table>
+      `;
+      stopsDiv.innerHTML = tableHtml;
+      trainRow.appendChild(stopsDiv);
+
+      let isOpen = false;
+      // Только кнопка разворачивает список
+      btn.addEventListener('click', () => {
+        isOpen = !isOpen;
+        stopsDiv.style.display = isOpen ? 'block' : 'none';
       });
 
-      // === Шаг 3: Фильтрация по коду поезда ===
-      lineSelect.addEventListener('change', () => {
-        const selected = lineSelect.value;
-        if (showForward) {
-          if (selected === 'all') {
-            renderTrains(trainsForward);
-          } else {
-            renderTrains(trainsForward.filter(tr => tr.trainId === selected));
-          }
-        } else {
-          if (selected === 'all') {
-            renderTrains(trainsBackward);
-          } else {
-            renderTrains(trainsBackward.filter(tr => tr.trainId === selected));
-          }
-        }
-      });
-
-      // === Шаг 4: (опционально) фильтрация/скролл по дате и времени ===
-      datePicker.addEventListener('change', () => {
-        // Если расписание разнится по датам (будни/выходные),
-        // сюда можно вставить логику подгрузки другого CSV
-      });
-      timePicker.addEventListener('change', () => {
-        // Можно добавить скролл к первому поезду после заданного времени
-      });
+      trainsList.appendChild(trainRow);
     });
+  }
+
+  Papa.parse(csvUrl, {
+    download: true,
+    skipEmptyLines: true,
+    complete: results => {
+      const raw = results.data;
+      const { forward, backward } = parseBothDirections(raw);
+      trainsForward = forward;
+      trainsBackward = backward;
+
+      showForward = true;
+      routeTitle.textContent = 'Yonago → Sakaiminato';
+      renderTrains(trainsForward);
+    },
+    error: err => {
+      trainsList.innerHTML = `<div class="text-danger">Ошибка загрузки CSV: ${err.message}</div>`;
+    }
+  });
+
+  toggleBtn.addEventListener('click', () => {
+    showForward = !showForward;
+    if (showForward) {
+      routeTitle.textContent = 'Yonago → Sakaiminato';
+      renderTrains(trainsForward);
+    } else {
+      routeTitle.textContent = 'Sakaiminato → Yonago';
+      renderTrains(trainsBackward);
+    }
+  });
+
+  // datePicker.addEventListener('change', () => { … });
+  // timePicker.addEventListener('change', () => { … });
+});
