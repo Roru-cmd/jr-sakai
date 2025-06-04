@@ -9,19 +9,22 @@
   <link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
 </head>
 <body>
-  
   <div class="container">
     <h1>JR SAKIMINATO LINE TIMETABLE</h1>
-    <button id="toggle-direction" class="btn btn-primary btn-toggle">
-      Opposite Direction
-    </button>
-    <div class="timetable-header mb-4">
-      <h2 id="route-title">Yonago → Sakaiminato</h2>
-    </div>
-    <div class="controls mb-4">
-      <div class="d-flex align-items-center">
-        <div id="date" class="me-2"></div>
-      </div>
+    <hr>
+    <div id="date" class="me-2"></div>
+    <h4>Fare</h4>
+    <!-- <div>
+      <div>Sakaiminato - Yonago</div><div id="fare-s-y"></div>
+    </div> -->
+    <div id="fare-s-y"></div>
+    <div id="fare-s-ay"></div>
+    <!-- <hr> -->
+    <div class="timetable-header mt-4 d-flex justify-content-between">
+      <h2 id="route-title" class="mb-0">Yonago → Sakaiminato</h2>
+      <button id="toggle-direction" class="btn btn-outline-primary btn-toggle">
+        Opposite Direction
+      </button>
     </div>
     <div id="trains-list">
       <div class="text-muted">Loading…</div>

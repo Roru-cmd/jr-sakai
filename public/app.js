@@ -3,9 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleBtn = document.getElementById('toggle-direction');
   const routeTitle = document.getElementById('route-title');
   const trainsList = document.getElementById('trains-list');
-  // const datePicker = document.getElementById('date-picker');
-  // const timePicker = document.getElementById('time-picker');
-  // const lineSelect = document.getElementById('line-select');  // убрали
 
   let trainsForward = [];
   let trainsBackward = [];
@@ -93,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderTrains(trainsArray) {
     trainsList.innerHTML = '';
     if (!trainsArray.length) {
-      trainsList.innerHTML = '<div class="text-danger">Рейсов не найдено.</div>';
+      trainsList.innerHTML = '<div class="text-danger">No trains found.</div>';
       return;
     }
 
@@ -133,17 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const timesEl = document.createElement('div');
       timesEl.className = 'train-times';
-      timesEl.textContent = `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
+    //   timesEl.textContent = `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
+      timesEl.textContent = `${departureTime} → ${arrivalTime}`;
       infoDiv.appendChild(timesEl);
+
+     const lineElt = document.createElement('div');
+      lineElt.className = 'train-line';
+      lineElt.textContent = `${isNaN(durMinutes) ? '--' : durMinutes} min`;
+      infoDiv.appendChild(lineElt);
 
       const lineEl = document.createElement('div');
       lineEl.className = 'train-line';
-      lineEl.textContent = `${train.trainId} – ${train.fare} (${train.direction})`;
+    //   lineEl.textContent = `${train.trainId} – ${train.fare} (${train.direction})`;
+      lineEl.textContent = `${train.direction}`;
       infoDiv.appendChild(lineEl);
 
       headerRow.appendChild(infoDiv);
 
-      // Привязываем разворачивание СТОЛЬКО к кнопке, а не к headerRow
+      // "Stops" button
       const btn = document.createElement('button');
       btn.className = 'btn btn-sm btn-outline-primary btn-stops';
       btn.type = 'button';
@@ -200,6 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
     skipEmptyLines: true,
     complete: results => {
       const raw = results.data;
+      const dateString = raw[1][0]?.trim() || '';
+      document.getElementById('date').textContent = dateString;
+      const fareSY = raw[3][0]?.trim() || '';
+      const fareSAY = raw[4][0]?.trim() || '';
+      document.getElementById('fare-s-y').textContent = fareSY;
+      document.getElementById('fare-s-ay').textContent = fareSAY;
       const { forward, backward } = parseBothDirections(raw);
       trainsForward = forward;
       trainsBackward = backward;
@@ -209,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderTrains(trainsForward);
     },
     error: err => {
-      trainsList.innerHTML = `<div class="text-danger">Ошибка загрузки CSV: ${err.message}</div>`;
+      trainsList.innerHTML = `<div class="text-danger">Error load CSV: ${err.message}</div>`;
     }
   });
 
@@ -224,6 +234,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // datePicker.addEventListener('change', () => { … });
-  // timePicker.addEventListener('change', () => { … });
 });
