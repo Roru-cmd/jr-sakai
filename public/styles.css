@@ -4,6 +4,10 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
 }
+h3{
+    margin: 1.5rem 0;
+    font-weight: 600;
+}
 h4{
     margin-top: 1.75rem ;
 }

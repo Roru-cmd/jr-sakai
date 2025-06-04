@@ -206,8 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const raw = results.data;
       const dateString = raw[1][0]?.trim() || '';
       document.getElementById('date').textContent = dateString;
-      const fareSY = raw[3][0]?.trim() || '';
-      const fareSAY = raw[4][0]?.trim() || '';
+    //   Direction and fare
+    //   const fareSY = raw[3][0]?.trim() || '';
+    //   const fareSAY = raw[4][0]?.trim() || '';
+      const fareSY = raw[3][0]?.split(':')[1]?.trim() || '';
+      const fareSAY = raw[4][0]?.split(':')[1]?.trim() || '';  
       document.getElementById('fare-s-y').textContent = fareSY;
       document.getElementById('fare-s-ay').textContent = fareSAY;
       const { forward, backward } = parseBothDirections(raw);
