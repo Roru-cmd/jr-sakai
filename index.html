@@ -3,123 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Расписание JR Sakai Line</title>
-  <!-- Bootstrap 5 CSS (без integrity) -->
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <style>
-    /* ————— Общие стили ————— */
-    body {
-      background-color: #f8f9fa;
-      font-family: Arial, sans-serif;
-      padding-top: 20px;
-      padding-bottom: 20px;
-    }
-    .timetable-header h1 {
-      font-size: 1.75rem;
-      font-weight: bold;
-    }
-    .timetable-header .travel-time {
-      font-size: 0.9rem;
-      color: #555;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .controls label {
-      font-weight: 500;
-    }
-    .controls input[type="date"],
-    .controls input[type="time"],
-    .controls select {
-      padding: 5px 8px;
-      font-size: 1rem;
-      border: 1px solid #ced4da;
-      border-radius: 0.25rem;
-      background-color: #fff;
-    }
-
-    /* ————— Стили для списка поездов ————— */
-    .train-row {
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      overflow: hidden;
-      transition: background-color 0.2s;
-    }
-    .train-row .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 15px;
-      cursor: pointer;
-    }
-    .train-row .header-row:hover {
-      background-color: #f1f1f1;
-    }
-    .train-info {
-      display: flex;
-      flex-direction: column;
-    }
-    .train-times {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-    .train-line {
-      font-size: 0.9rem;
-      color: #333;
-      margin-top: 3px;
-    }
-    .btn-stops {
-      font-size: 0.85rem;
-      padding: 5px 12px;
-    }
-    .stops-list {
-      display: none;
-      padding: 10px 15px;
-      background-color: #fafafa;
-      border-top: 1px solid #ddd;
-    }
-    .stops-list table {
-      width: 100%;
-    }
-    .stops-list th,
-    .stops-list td {
-      padding: 4px 8px;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    .stops-list th {
-      background-color: #f0f0f0;
-    }
-    .time-marker {
-      font-size: 0.8rem;
-      color: #777;
-      padding-top: 15px;
-      padding-bottom: 5px;
-      border-top: 1px solid #e0e0e0;
-      margin-top: 20px;
-      margin-bottom: 10px;
-    }
-  </style>
+  <title>JR Sakai Line</title>
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="public/styles.css" />
+  <link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
 </head>
 <body>
   <div class="container">
-    <!-- Заголовок -->
+    <!-- Кнопка переключения направления -->
+    <button id="toggle-direction" class="btn btn-primary btn-toggle">
+      Opposite Direction
+    </button>
+
+    <!-- Шапка страницы -->
     <div class="timetable-header mb-4">
-      <h1>Yonago → Sakaiminato</h1>
-      <div class="travel-time">Required time: JR Sakai Line – 44 min ~</div>
+      <h1 id="route-title">Yonago → Sakaiminato</h1>
+      <div class="travel-time" id="travel-time">Required time: JR Sakai Line – 44 min ~</div>
     </div>
 
     <!-- Блок управления (дата, время, фильтр) -->
-    <div class="controls">
+    <div class="controls mb-4">
       <div class="d-flex align-items-center">
         <label for="date-picker" class="me-2">Дата:</label>
         <input type="date" id="date-picker" value="2024-03-16" />
@@ -132,267 +36,15 @@
         <label for="line-select" class="me-2">Фильтр поездов:</label>
         <select id="line-select">
           <option value="all">All</option>
-          <!-- JS динамически добавит сюда trainId -->
         </select>
       </div>
     </div>
-
-    <!-- Сюда вставим готовые блоки train-row -->
     <div id="trains-list">
       <div class="text-muted">Загрузка расписания…</div>
     </div>
   </div>
-
-  <!-- PapaParse (CDN) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-  <!-- Bootstrap 5 JS (CDN) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const csvUrl = 'data/JR_Sakai_Line_Timetable.csv';
-      const trainsList = document.getElementById('trains-list');
-      const datePicker = document.getElementById('date-picker');
-      const timePicker = document.getElementById('time-picker');
-      const lineSelect = document.getElementById('line-select');
-
-      let allTrains = [];
-
-      /**
-       * Парсер «сырых» строк CSV в массив объектов:
-       * [
-       *   { trainId, date, fare, direction, stops: [ {km, station, time}, … ] },
-       *   …
-       * ]
-       */
-      function buildTrainObjects(rawRows) {
-        // rawRows[1][0] = '2024-03-16'  (дата)
-        // rawRows[3][0] = 'Sakaiminato - Yonago:    330 yen'
-        const dateString = rawRows[1][0].trim();
-        const fareMatch = rawRows[3][0].split(':')[1]?.trim() || ''; // «330 yen»
-        const fareString = fareMatch;
-
-        // Ищем строку, где rawRows[i][0].trim().toLowerCase() === 'km'
-        const headerIndex = rawRows.findIndex(row => {
-          return row[0] && row[0].trim().toLowerCase() === 'km';
-        });
-        if (headerIndex < 0) {
-          // Если не нашли, возвращаем пустой массив
-          return [];
-        }
-
-        // Строка «km,Station,,1632D,1634D,…»
-        const headerRow = rawRows[headerIndex];
-        // Train IDs начинаются с 4-й колонки (индекс 3), потому что:
-        //   headerRow[0] = 'km'
-        //   headerRow[1] = 'Station'
-        //   headerRow[2] = ''         (пустая ячейка)
-        //   headerRow[3] = '1632D'
-        //   headerRow[4] = '1634D'
-        const trainIds = headerRow.slice(3).filter(cell => cell && cell.trim() !== '');
-
-        // Теперь соберём станции для каждого trainId. Станции лежат в строках:
-        // rawRows[headerIndex+1], rawRows[headerIndex+2], … пока rawRows[x][0] !== ''
-        const stationRows = [];
-        for (let i = headerIndex + 1; i < rawRows.length; i++) {
-          const row = rawRows[i];
-          // Если первая колонка пустая или строка «Yonago-Sakaiminato» – останавливаем
-          if (!row[0] || row[0].trim() === '' || row[0].toString().startsWith('Yonago-')) {
-            break;
-          }
-          stationRows.push(row);
-        }
-
-        // Инициализируем массив поездов
-        const trains = trainIds.map((tid) => ({
-          trainId: tid.trim(),
-          date: dateString,
-          fare: fareString,
-          direction: 'Sakaiminato→Yonago',
-          stops: []
-        }));
-
-        // Пройдём по stationRows и заполним stops
-        stationRows.forEach((row) => {
-          // row[0] = km, row[1] = японское название, row[2] = английское название
-          const km = row[0]?.trim();
-          const stationName = row[2]?.trim();
-          // дальше начиная с row[3] идут времена для trainIds
-          trainIds.forEach((tid, idx) => {
-            const timeValue = row[3 + idx]?.trim();
-            if (timeValue && stationName) {
-              trains[idx].stops.push({
-                km: km,
-                station: stationName,
-                time: timeValue
-              });
-            }
-          });
-        });
-
-        return trains;
-      }
-
-      /**
-       * Рендерит на страницу массив объектов train:
-       * Для каждого поезда выводит «серую полосу» с меткой часа,
-       * строку общих данных (departure→arrival, код поезда и fare) и кнопку «Остановки»,
-       * а снизу – скрытую таблицу со всеми станциями (km, station, time).
-       */
-      function renderTrains(trainsArray) {
-        trainsList.innerHTML = '';
-        if (!trainsArray.length) {
-          trainsList.innerHTML = '<div class="text-danger">Рейсов не найдено.</div>';
-          return;
-        }
-
-        let lastHourMarker = null;
-        trainsArray.forEach((train) => {
-          // Берём первое время (firstStop.time) и определяем метку часа
-          const firstStopTime = train.stops[0]?.time || '00:00';
-          const [h0, ] = firstStopTime.split(':').map(Number);
-          const hourLabel = h0.toString().padStart(2, '0') + ':00';
-
-          if (hourLabel !== lastHourMarker) {
-            const markerEl = document.createElement('div');
-            markerEl.className = 'time-marker';
-            markerEl.textContent = hourLabel;
-            trainsList.appendChild(markerEl);
-            lastHourMarker = hourLabel;
-          }
-
-          // Корневой блок train-row
-          const trainRow = document.createElement('div');
-          trainRow.className = 'train-row';
-
-          // Вёрстка «шапки» – .header-row
-          const headerRow = document.createElement('div');
-          headerRow.className = 'header-row';
-
-          // Блок с информацией (departure→arrival и trainId, fare)
-          const infoDiv = document.createElement('div');
-          infoDiv.className = 'train-info';
-
-          const departureTime = train.stops[0]?.time || '--:--';
-          const arrivalTime = train.stops[train.stops.length - 1]?.time || '--:--';
-          // Считаем длительность в минутах (если возможно)
-          let durMinutes = NaN;
-          if (departureTime.includes(':') && arrivalTime.includes(':')) {
-            const [h1, m1] = departureTime.split(':').map(Number);
-            const [h2, m2] = arrivalTime.split(':').map(Number);
-            let d = (h2 * 60 + m2) - (h1 * 60 + m1);
-            if (d < 0) d += 24 * 60;
-            durMinutes = d;
-          }
-
-          const timesEl = document.createElement('div');
-          timesEl.className = 'train-times';
-          timesEl.textContent = `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
-          infoDiv.appendChild(timesEl);
-
-          const lineEl = document.createElement('div');
-          lineEl.className = 'train-line';
-          lineEl.textContent = `${train.trainId} – ${train.fare}`;
-          infoDiv.appendChild(lineEl);
-
-          headerRow.appendChild(infoDiv);
-
-          // Кнопка «Остановки»
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-sm btn-outline-primary btn-stops';
-          btn.type = 'button';
-          btn.textContent = 'Остановки';
-          headerRow.appendChild(btn);
-
-          trainRow.appendChild(headerRow);
-
-          // Блок с таблицей остановок (по-умолчанию скрыт)
-          const stopsDiv = document.createElement('div');
-          stopsDiv.className = 'stops-list';
-
-          // Собираем HTML-таблицу
-          let tableHtml = `
-            <table class="table table-sm mb-0">
-              <thead>
-                <tr>
-                  <th style="width: 15%;">Km</th>
-                  <th style="width: 45%;">Station</th>
-                  <th style="width: 40%;">Time</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          train.stops.forEach((stop) => {
-            tableHtml += `
-              <tr>
-                <td>${stop.km}</td>
-                <td>${stop.station}</td>
-                <td>${stop.time}</td>
-              </tr>
-            `;
-          });
-          tableHtml += `
-              </tbody>
-            </table>
-          `;
-          stopsDiv.innerHTML = tableHtml;
-          trainRow.appendChild(stopsDiv);
-
-          // Клик на «шапку» переключает видимость stopsDiv
-          let isOpen = false;
-          headerRow.addEventListener('click', () => {
-            isOpen = !isOpen;
-            stopsDiv.style.display = isOpen ? 'block' : 'none';
-          });
-
-          trainsList.appendChild(trainRow);
-        });
-      }
-
-      // === Шаг 1: Считываем CSV и разбираем через PapaParse ===
-      Papa.parse(csvUrl, {
-        download: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          const raw = results.data; 
-          const trains = buildTrainObjects(raw);
-          allTrains = trains;
-
-          // Наполняем селектор trainId
-          trains.forEach(train => {
-            const opt = document.createElement('option');
-            opt.value = train.trainId;
-            opt.textContent = train.trainId;
-            lineSelect.appendChild(opt);
-          });
-
-          // Рендерим сразу все поезда
-          renderTrains(allTrains);
-        },
-        error: function(err) {
-          trainsList.innerHTML = `<div class="text-danger">Ошибка загрузки CSV: ${err.message}</div>`;
-        }
-      });
-
-      // === Шаг 2: Фильтрация по коду поезда ===
-      lineSelect.addEventListener('change', () => {
-        const selected = lineSelect.value;
-        if (selected === 'all') {
-          renderTrains(allTrains);
-        } else {
-          const filtered = allTrains.filter(tr => tr.trainId === selected);
-          renderTrains(filtered);
-        }
-      });
-
-      // === Шаг 3: (по желанию) логика по дате/времени ===
-      datePicker.addEventListener('change', () => {
-        // Если потребуется: можно загружать другой CSV в зависимости от выбранной даты
-      });
-      timePicker.addEventListener('change', () => {
-        // Можно будет прокручивать контейнер к первому рейсу после указанного времени
-      });
-    });
-  </script>
+  <script src="public/app.js"></script>
 </body>
 </html>

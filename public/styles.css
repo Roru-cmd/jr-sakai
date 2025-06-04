@@ -1,0 +1,100 @@
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.timetable-header h1 {
+    font-size: 1.75rem;
+    font-weight: bold;
+}
+.timetable-header .travel-time {
+    font-size: 0.9rem;
+    color: #555;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.controls label {
+    font-weight: 500;
+}
+.controls input[type="date"],
+.controls input[type="time"],
+.controls select {
+    padding: 5px 8px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background-color: #fff;
+}
+
+.btn-toggle {
+    margin-bottom: 20px;
+}
+
+.train-row {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: background-color 0.2s;
+}
+.train-row .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+.train-row .header-row:hover {
+    background-color: #f1f1f1;
+}
+.train-info {
+    display: flex;
+    flex-direction: column;
+}
+.train-times {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+.train-line {
+    font-size: 0.9rem;
+    color: #333;
+    margin-top: 3px;
+}
+.btn-stops {
+    font-size: 0.85rem;
+    padding: 5px 12px;
+}
+.stops-list {
+    display: none;
+    padding: 10px 15px;
+    background-color: #fafafa;
+    border-top: 1px solid #ddd;
+}
+.stops-list table {
+    width: 100%;
+}
+.stops-list th,
+.stops-list td {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+.stops-list th {
+    background-color: #f0f0f0;
+}
+.time-marker {
+    font-size: 0.8rem;
+    color: #777;
+    padding-top: 15px;
+    padding-bottom: 5px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
