@@ -1,244 +1,3 @@
-// document.addEventListener('DOMContentLoaded', () => {
-//   const csvUrl = 'data/JR_Sakai_Line_Timetable.csv';
-//   const toggleBtn = document.getElementById('toggle-direction');
-//   const routeTitle = document.getElementById('route-title');
-//   const trainsList = document.getElementById('trains-list');
-
-//   let trainsForward = [];
-//   let trainsBackward = [];
-//   let showForward = true;
-
-//   function parseBothDirections(rawRows) {
-//     const result = { forward: [], backward: [] };
-//     const dateString = rawRows[1][0]?.trim() || '';
-//     const fareMatch = rawRows[3][0].split(':')[1]?.trim() || '';
-//     const fareString = fareMatch;
-
-//     let headerIndexForward = -1;
-//     let headerIndexBackward = -1;
-//     let foundSeparator = false;
-
-//     for (let i = 0; i < rawRows.length; i++) {
-//       const row0 = rawRows[i][0]?.trim() ?? '';
-//       if (!foundSeparator) {
-//         if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
-//           headerIndexForward = i;
-//         }
-//         if (rawRows[i][0]?.toString().startsWith('Yonago-Sakaiminato')) {
-//           foundSeparator = true;
-//         }
-//       } else {
-//         if (row0.toLowerCase() === 'km' && rawRows[i][2]?.trim() === '') {
-//           headerIndexBackward = i;
-//           break;
-//         }
-//       }
-//     }
-
-//     if (headerIndexForward < 0) return result;
-
-//     function buildOneDirection(startIndex) {
-//       const headerRow = rawRows[startIndex];
-//       const trainIds = headerRow.slice(3).filter(cell => cell && cell.trim() !== '');
-//       const stationRows = [];
-//       for (let j = startIndex + 1; j < rawRows.length; j++) {
-//         const r0 = rawRows[j][0]?.toString() || '';
-//         if (!r0.trim()) break;
-//         if (r0.startsWith('Yonago-Sakaiminato') || r0.startsWith('Sakaiminato-Yonago')) break;
-//         stationRows.push(rawRows[j]);
-//       }
-
-//       const trains = trainIds.map(tid => ({
-//         trainId: tid.trim(),
-//         date: dateString,
-//         fare: fareString,
-//         direction: '', 
-//         stops: []
-//       }));
-
-//       stationRows.forEach(row => {
-//         const km = row[0]?.trim();
-//         const stationJP = row[1]?.trim();
-//         const stationEN = row[2]?.trim();
-//         trainIds.forEach((tid, idx) => {
-//           const timeValue = row[3 + idx]?.trim();
-//           if (timeValue && stationEN) {
-//             trains[idx].stops.push({
-//               km: km,
-//               stationJP: stationJP,
-//               stationEN: stationEN,
-//               time: timeValue
-//             });
-//           }
-//         });
-//       });
-
-//       return trains;
-//     }
-
-//     trainsBackward = buildOneDirection(headerIndexForward);
-//     trainsBackward.forEach(t => t.direction = 'Sakaiminato → Yonago');
-
-//     if (headerIndexBackward >= 0) {
-//       trainsForward = buildOneDirection(headerIndexBackward);
-//       trainsForward.forEach(t => t.direction = 'Yonago → Sakaiminato');
-//     }
-
-//     return { forward: trainsForward, backward: trainsBackward };
-//   }
-
-//   function renderTrains(trainsArray) {
-//     trainsList.innerHTML = '';
-//     if (!trainsArray.length) {
-//       trainsList.innerHTML = '<div class="text-danger">No trains found.</div>';
-//       return;
-//     }
-
-//     let lastHourMarker = null;
-//     trainsArray.forEach(train => {
-//       const firstStopTime = train.stops[0]?.time || '00:00';
-//       const [h0] = firstStopTime.split(':').map(Number);
-//       const hourLabel = h0.toString().padStart(2, '0') + ':00';
-
-//       if (hourLabel !== lastHourMarker) {
-//         const markerEl = document.createElement('div');
-//         markerEl.className = 'time-marker';
-//         markerEl.textContent = hourLabel;
-//         trainsList.appendChild(markerEl);
-//         lastHourMarker = hourLabel;
-//       }
-
-//       const trainRow = document.createElement('div');
-//       trainRow.className = 'train-row';
-
-//       const headerRow = document.createElement('div');
-//       headerRow.className = 'header-row';
-
-//       const infoDiv = document.createElement('div');
-//       infoDiv.className = 'train-info';
-
-//       const departureTime = train.stops[0]?.time || '--:--';
-//       const arrivalTime = train.stops[train.stops.length - 1]?.time || '--:--';
-//       let durMinutes = NaN;
-//       if (departureTime.includes(':') && arrivalTime.includes(':')) {
-//         const [h1, m1] = departureTime.split(':').map(Number);
-//         const [h2, m2] = arrivalTime.split(':').map(Number);
-//         let d = (h2 * 60 + m2) - (h1 * 60 + m1);
-//         if (d < 0) d += 24 * 60;
-//         durMinutes = d;
-//       }
-
-//       const timesEl = document.createElement('div');
-//       timesEl.className = 'train-times';
-//     //   timesEl.textContent = `${departureTime} → ${arrivalTime} (${isNaN(durMinutes) ? '--' : durMinutes} min)`;
-//       timesEl.textContent = `${departureTime} → ${arrivalTime}`;
-//       infoDiv.appendChild(timesEl);
-
-//      const lineElt = document.createElement('div');
-//       lineElt.className = 'train-line';
-//       lineElt.textContent = `${isNaN(durMinutes) ? '--' : durMinutes} min`;
-//       infoDiv.appendChild(lineElt);
-
-//       const lineEl = document.createElement('div');
-//       lineEl.className = 'train-line';
-//     //   lineEl.textContent = `${train.trainId} – ${train.fare} (${train.direction})`;
-//       lineEl.textContent = `${train.direction}`;
-//       infoDiv.appendChild(lineEl);
-
-//       headerRow.appendChild(infoDiv);
-
-//       // "Stops" button
-//       const btn = document.createElement('button');
-//       btn.className = 'btn btn-sm btn-outline-primary btn-stops';
-//       btn.type = 'button';
-//       btn.textContent = 'Stops';
-//       headerRow.appendChild(btn);
-
-//       trainRow.appendChild(headerRow);
-
-//       const stopsDiv = document.createElement('div');
-//       stopsDiv.className = 'stops-list';
-
-//       let tableHtml = `
-//         <table class="table table-sm mb-0">
-//           <thead>
-//             <tr>
-//               <th style="width: 10%;">Km</th>
-//               <th style="width: 30%;">Station (JP)</th>
-//               <th style="width: 30%;">Station (EN)</th>
-//               <th style="width: 30%;">Time</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//       `;
-//       train.stops.forEach(stop => {
-//         tableHtml += `
-//           <tr>
-//             <td>${stop.km}</td>
-//             <td>${stop.stationJP}</td>
-//             <td>${stop.stationEN}</td>
-//             <td>${stop.time}</td>
-//           </tr>
-//         `;
-//       });
-//       tableHtml += `
-//           </tbody>
-//         </table>
-//       `;
-//       stopsDiv.innerHTML = tableHtml;
-//       trainRow.appendChild(stopsDiv);
-
-//       let isOpen = false;
-//       // Только кнопка разворачивает список
-//       btn.addEventListener('click', () => {
-//         isOpen = !isOpen;
-//         stopsDiv.style.display = isOpen ? 'block' : 'none';
-//       });
-
-//       trainsList.appendChild(trainRow);
-//     });
-//   }
-
-//   Papa.parse(csvUrl, {
-//     download: true,
-//     skipEmptyLines: true,
-//     complete: results => {
-//       const raw = results.data;
-//       const dateString = raw[1][0]?.trim() || '';
-//       document.getElementById('date').textContent = dateString;
-//     //   Direction and fare
-//     //   const fareSY = raw[3][0]?.trim() || '';
-//     //   const fareSAY = raw[4][0]?.trim() || '';
-//       const fareSY = raw[3][0]?.split(':')[1]?.trim() || '';
-//       const fareSAY = raw[4][0]?.split(':')[1]?.trim() || '';  
-//       document.getElementById('fare-s-y').textContent = fareSY;
-//       document.getElementById('fare-s-ay').textContent = fareSAY;
-//       const { forward, backward } = parseBothDirections(raw);
-//       trainsForward = forward;
-//       trainsBackward = backward;
-
-//       showForward = true;
-//       routeTitle.textContent = 'Yonago → Sakaiminato';
-//       renderTrains(trainsForward);
-//     },
-//     error: err => {
-//       trainsList.innerHTML = `<div class="text-danger">Error load CSV: ${err.message}</div>`;
-//     }
-//   });
-
-//   toggleBtn.addEventListener('click', () => {
-//     showForward = !showForward;
-//     if (showForward) {
-//       routeTitle.textContent = 'Yonago → Sakaiminato';
-//       renderTrains(trainsForward);
-//     } else {
-//       routeTitle.textContent = 'Sakaiminato → Yonago';
-//       renderTrains(trainsBackward);
-//     }
-//   });
-
-// });
-
 document.addEventListener('DOMContentLoaded', () => {
   const csvUrl = 'data/JR_Sakai_Line_Timetable.csv';
   const weekdaysTab = document.getElementById('weekdays-tab');
@@ -250,22 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const fareSAYEl    = document.getElementById('fare-s-ay');
   const toggleBtn    = document.getElementById('toggle-direction');
 
-  // Четыре массива для двух табов и двух направлений внутри каждого
+  // Four arrays for two tabs and two directions in each
   let weekdaysForward   = [];
   let weekdaysBackward  = [];
   let weekendsForward   = [];
   let weekendsBackward  = [];
 
-  // Хранят текущий активный таб («weekdays» или «weekends») и направление (true=forward, false=backward)
+  // Store current active tab ("weekdays" or "weekends") and direction (true=forward, false=backward)
   let activeTab      = 'weekdays';
   let showForward    = true;
 
   /**
-   * Парсит rawRows в два массива (forward/backward) для заданного диапазона строк [startIdx..endIdx).
-   * directionTextForward  и directionTextBackward  нужны, чтобы пометить каждый объект train.direction.
+   * Parses rawRows into two arrays (forward/backward) for the given range [startIdx..endIdx).
+   * directionTextForward and directionTextBackward are used to label each train.direction.
    */
   function parseBlock(rawRows, startIdx, endIdx, directionTextForward, directionTextBackward) {
-    // Ищем заголовок «km» внутри блока [startIdx..endIdx)
+    // Find the "km" header inside the block [startIdx..endIdx)
     let headerIndexForward  = -1;
     let headerIndexBackward = -1;
     let foundSeparator      = false;
@@ -276,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (cell0 === 'km' && rawRows[i][2]?.trim() === '') {
           headerIndexForward = i;
         }
-        // Как только встречаем строку, начинающуюся с 'Yonago-Sakaiminato', переключаемся
+        // As soon as we see a row starting with 'Yonago-Sakaiminato', switch
         if (rawRows[i][0]?.startsWith('Yonago-Sakaiminato')) {
           foundSeparator = true;
         }
@@ -291,13 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = { forward: [], backward: [] };
     if (headerIndexForward < 0) return result;
 
-    // Вспомогательная функция строит массив поездов (forward или backward) из одного заголовка
+    // Helper function builds an array of trains (forward or backward) from one header
     function buildOneDirection(startIndex, directionText) {
       const headerRow = rawRows[startIndex];
-      // Номера поездов – начиная с колонки 3
+      // Train numbers – starting from column 3
       const trainIds = headerRow.slice(3).filter(cell => cell && cell.trim() !== '');
 
-      // Станции идут со строки startIndex+1, пока не пустая или не новый разделитель
+      // Stations go from startIndex+1, until empty or new separator
       const stationRows = [];
       for (let j = startIndex + 1; j < endIdx; j++) {
         const r0 = rawRows[j][0]?.toString() || '';
@@ -306,13 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
         stationRows.push(rawRows[j]);
       }
 
-      // Дата и тарифы уже получены отдельно; тут только строим объекты поездов
+      // Date and fares are already obtained separately; here we only build train objects
       const trains = trainIds.map((tid) => ({
         trainId: tid.trim(),
-        date: '',     // заполнится снаружи, если нужно
-        fare: '',     // заполнится снаружи
+        date: '',     // will be filled outside if needed
+        fare: '',     // will be filled outside
         direction: directionText,
-        stops: []     // массив {km, stationJP, stationEN, time}
+        stops: []     // array of {km, stationJP, stationEN, time}
       }));
 
       stationRows.forEach(row => {
@@ -335,11 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
       return trains;
     }
 
-    // Budni: Sakaiminato→Yonago
+    // Weekdays: Sakaiminato→Yonago
     const backward = buildOneDirection(headerIndexForward, directionTextBackward);
     backward.forEach(t => t.direction = directionTextBackward);
 
-    // Budni: Yonago→Sakaiminato (если есть второй header)
+    // Weekdays: Yonago→Sakaiminato (if there is a second header)
     let forward = [];
     if (headerIndexBackward >= 0) {
       forward = buildOneDirection(headerIndexBackward, directionTextForward);
@@ -350,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Рендерит указанный массив поездов на страницу
+   * Renders the given array of trains to the page
    */
   function renderTrains(trainsArray) {
     trainsList.innerHTML = '';
@@ -407,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
       lineElt.textContent = `${isNaN(durMinutes) ? '--' : durMinutes} min`;
       infoDiv.appendChild(lineElt);
 
-      // Тариф уже забит в train.fare при парсинге
+      // Fare is already set in train.fare during parsing
       const lineEl = document.createElement('div');
       lineEl.className = 'train-line';
       lineEl.textContent = `${train.direction}. ${train.trainId}`;
@@ -466,9 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /**
-   * Основной парсинг всего CSV: сначала собираем rawRows,
-   * затем извлекаем дату, тарифы, разбиваем на два блока: WEEKDAYS / WEEKENDS,
-   * и далее каждый блок распиливаем на forward/backward.
+   * Main CSV parsing: first collect rawRows,
+   * then extract date, fares, split into two blocks: WEEKDAYS / WEEKENDS,
+   * and then each block is split into forward/backward.
    */
   Papa.parse(csvUrl, {
     download: true,
@@ -476,26 +235,26 @@ document.addEventListener('DOMContentLoaded', () => {
     complete: results => {
       const raw = results.data;
 
-      // ————— Отобразим дату и тарифы (они едины и для выходных, и для будних) —————
+      // ————— Display date and fares (they are the same for both weekends and weekdays) —————
       const dateString = raw[1][0]?.trim() || '';
       dateEl.textContent = dateString;
 
-      // Вставляем в блок «Fare» только цифру + «yen» (после двоеточия)
+      // Insert only the number + "yen" (after the colon) into the "Fare" block
       const fareSY  = raw[3][0]?.split(':')[1]?.trim() || '';
       const fareSAY = raw[4][0]?.split(':')[1]?.trim() || '';
       fareSYEl.textContent  = fareSY;
       fareSAYEl.textContent = fareSAY;
-      // ————————————————————————————————————————————————————————————————————————
+      // ————————————————————————————————————————————————————————————————
 
-      // Найдём индексы, где начинаются блоки «WEEKDAYS» и «WEEKENDS»
+      // Find indices where the "WEEKDAYS" and "WEEKENDS" blocks start
       const idxWeekdays = raw.findIndex(row => row[0]?.trim() === 'WEEKDAYS');
       const idxWeekends = raw.findIndex(row => row[0]?.trim() === 'WEEKENDS');
 
-      // Граница до каждого блока (следующий заголовок или конец)
+      // End of each block (next header or end)
       const endWeekdays = (idxWeekends >= 0 ? idxWeekends : raw.length);
       const endWeekends = raw.length;
 
-      // Парсим будни (строки [idxWeekdays+1 .. endWeekdays))
+      // Parse weekdays (rows [idxWeekdays+1 .. endWeekdays))
       const blockWeekdays = raw.slice(idxWeekdays + 1, endWeekdays);
       const { forward: wdFwd, backward: wdBwd } =
         parseBlock(raw, idxWeekdays + 1, endWeekdays,
@@ -503,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
       weekdaysForward  = wdFwd.map(t => ({ ...t, fare: fareSY }));
       weekdaysBackward = wdBwd.map(t => ({ ...t, fare: fareSY }));
 
-      // Парсим выходные (если есть)
+      // Parse weekends (if present)
       let weFwd = [], weBwd = [];
       if (idxWeekends >= 0) {
         const blockWeekends = raw.slice(idxWeekends + 1, endWeekends);
@@ -516,23 +275,23 @@ document.addEventListener('DOMContentLoaded', () => {
       weekendsForward  = weFwd;
       weekendsBackward = weBwd;
 
-      // Изначально показываем будни (weekdays) в направлении forward
+      // Initially show weekdays in the forward direction
       activeTab = 'weekdays';
       showForward = true;
       routeTitle.textContent = 'Yonago → Sakaiminato';
       renderTrains(weekdaysForward);
     },
     error: err => {
-      trainsList.innerHTML = `<div class="text-danger">Ошибка загрузки CSV: ${err.message}</div>`;
+      trainsList.innerHTML = `<div class="text-danger">Error loading CSV: ${err.message}</div>`;
     }
   });
 
-  // Обработчик кликов на табе «WEEKDAYS»
+  // Handler for clicking the "WEEKDAYS" tab
   weekdaysTab.addEventListener('click', () => {
     if (activeTab === 'weekdays') return;
     activeTab = 'weekdays';
     showForward = true;
-    // Подсветим активный таб
+    // Highlight the active tab
     weekdaysTab.classList.remove('text-muted');
     weekdaysTab.style.textDecoration = 'underline';
     weekendsTab.classList.add('text-muted');
@@ -542,12 +301,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTrains(weekdaysForward);
   });
 
-  // Обработчик кликов на табе «WEEKENDS»
+  // Handler for clicking the "WEEKENDS" tab
   weekendsTab.addEventListener('click', () => {
     if (activeTab === 'weekends') return;
     activeTab = 'weekends';
     showForward = true;
-    // Подсветим активный таб
+    // Highlight the active tab
     weekendsTab.classList.remove('text-muted');
     weekendsTab.style.textDecoration = 'underline';
     weekdaysTab.classList.add('text-muted');
@@ -557,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTrains(weekendsForward);
   });
 
-  // Кнопка «Opposite Direction»
+  // "Opposite Direction" button
   toggleBtn.addEventListener('click', () => {
     showForward = !showForward;
     if (activeTab === 'weekdays') {
