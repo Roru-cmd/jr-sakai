@@ -286,36 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Handler for clicking the "WEEKDAYS" tab
-  weekdaysTab.addEventListener('click', () => {
-    if (activeTab === 'weekdays') return;
-    activeTab = 'weekdays';
-    showForward = true;
-    // Highlight the active tab
-    weekdaysTab.classList.remove('text-muted');
-    weekdaysTab.style.textDecoration = 'underline';
-    weekendsTab.classList.add('text-muted');
-    weekendsTab.style.textDecoration = 'none';
-
-    routeTitle.textContent = 'Yonago → Sakaiminato';
-    renderTrains(weekdaysForward);
-  });
-
-  // Handler for clicking the "WEEKENDS" tab
-  weekendsTab.addEventListener('click', () => {
-    if (activeTab === 'weekends') return;
-    activeTab = 'weekends';
-    showForward = true;
-    // Highlight the active tab
-    weekendsTab.classList.remove('text-muted');
-    weekendsTab.style.textDecoration = 'underline';
-    weekdaysTab.classList.add('text-muted');
-    weekdaysTab.style.textDecoration = 'none';
-
-    routeTitle.textContent = 'Yonago → Sakaiminato';
-    renderTrains(weekendsForward);
-  });
-
   // "Opposite Direction" button
   toggleBtn.addEventListener('click', () => {
     showForward = !showForward;
@@ -337,4 +307,23 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Handler for changing Weekdays
+  function activate(tab) {
+  activeTab = tab;
+  showForward = true;
+  if (tab === 'weekdays') {
+    weekdaysTab.classList.add('toggle-btn--active');
+    weekendsTab.classList.remove('toggle-btn--active');
+    routeTitle.textContent = 'Yonago → Sakaiminato';
+    renderTrains(weekdaysForward);
+  } else {
+    weekendsTab.classList.add('toggle-btn--active');
+    weekdaysTab.classList.remove('toggle-btn--active');
+    routeTitle.textContent = 'Yonago → Sakaiminato';
+    renderTrains(weekendsForward);
+  }
+}
+  weekdaysTab.addEventListener('click', () => activate('weekdays'));
+  weekendsTab.addEventListener('click', () => activate('weekends'));
 });
