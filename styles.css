@@ -1,18 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
+
 body {
     background-color: #f8f9fa;
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     padding-top: 20px;
     padding-bottom: 20px;
 }
+h1 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;  
+    font-size: 3rem;    
+    margin: 0;         
+}
+
 h3{
+    font-family: 'Rubik', sans-serif;
     margin: 1.5rem 0;
     font-weight: 600;
 }
 h4{
+    font-family: 'Roboto', sans-serif;
     margin-top: 1.75rem ;
+    font-size: 1.7em;
 }
 .container{
     max-width: 60rem;
+}
+.date,
+.fare-s-y {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
 }
 .timetable-header h1 {
     font-size: 1.75rem;
@@ -45,7 +63,6 @@ h4{
 .btn-toggle {
     margin-bottom: 20px;
 }
-
 .train-row {
     background-color: #fff;
     border: 1px solid #ddd;
@@ -107,4 +124,49 @@ h4{
     border-top: 1px solid #e0e0e0;
     margin-top: 20px;
     margin-bottom: 10px;
+}
+
+/* WEEKDAY switcher */
+.toggle-container {
+    margin-top: 1.25rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: inline-flex;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+}
+.toggle-btn {
+    color: #aaa;
+    background: #f8f9fa;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+}
+.toggle-btn + .toggle-btn {
+    border-left: 1px solid #ccc;
+}
+/* .toggle-btn:hover {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+} */
+.toggle-btn--active {
+  background: #fff;
+  color: #000;
+  font-weight: 600;
+}
+.toggle-btn:focus {
+  outline: none;
+}
+.toggle-container {
+  border-radius: .5rem;
+}
+.toggle-btn:first-child.toggle-btn--active {
+  border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem;
+}
+.toggle-btn:last-child.toggle-btn--active {
+  border-top-right-radius: .5rem;
+  border-bottom-right-radius: .5rem;
 }

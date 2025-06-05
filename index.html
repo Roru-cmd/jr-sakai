@@ -14,10 +14,10 @@
   <h1>JR SAKAI LINE TIMETABLE</h1>
   <hr>
 
-  <div id="date" class="me-2"></div>
+  <div id="date" class="date me-2"></div>
   <h4>Fare</h4>
   <div class="row">
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+    <div class="fare-s-y col-12 col-sm-8 col-md-6 col-lg-4">
       <div class="d-flex justify-content-between">
         <div>• Sakaiminato - Yonago</div>
         <div id="fare-s-y"></div>
@@ -29,11 +29,14 @@
     </div>
   </div>
 
-  <h3>
-    <span id="weekdays-tab" style="cursor: pointer; text-decoration: underline;">WEEKDAYS</span>
-    &nbsp;|&nbsp;
-    <span id="weekends-tab" class="text-muted" style="cursor: pointer;">WEEKENDS</span>
-  </h3>
+  <div class="toggle-container">
+    <button id="weekdays-tab" class="toggle-btn toggle-btn--active">
+      WEEKDAYS
+    </button>
+    <button id="weekends-tab" class="toggle-btn">
+      WEEKENDS
+    </button>
+  </div>
 
   <div class="timetable-header mt-2 d-flex justify-content-between align-items-center">
     <h2 id="route-title" class="mb-0">Yonago → Sakaiminato</h2>
