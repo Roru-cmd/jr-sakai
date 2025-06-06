@@ -149,15 +149,18 @@ h4{
     color: #aaa;
     /* background: #f8f9fa; */
     background: #fff;
-    border: none;
+    /* border: none; */
     padding: 0.5rem 1rem;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s, color 0.2s;
+    border: 1px solid #ccc;
+    margin-right: .3rem;
 }
 .toggle-btn + .toggle-btn {
+    border: 1px solid #ccc;
     /* border-left: 1px solid #ccc; */
-    border: none;
+    /* border: none; */
 }
 /* .toggle-btn:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
