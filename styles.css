@@ -150,15 +150,17 @@ h4{
     /* background: #f8f9fa; */
     background: #fff;
     /* border: none; */
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s, color 0.2s;
     border: 1px solid #ccc;
-    margin-right: .3rem;
+    margin: 0.2rem;
+    border-radius: .3rem;
 }
 .toggle-btn + .toggle-btn {
     border: 1px solid #ccc;
+    border-radius: .3rem;
     /* border-left: 1px solid #ccc; */
     /* border: none; */
 }
@@ -168,7 +170,7 @@ h4{
 .toggle-btn--active {
     background: #f8f9fa;
     color: #000;
-    font-weight: 600;
+    font-weight: 600;   
 }
 .toggle-btn:focus {
     outline: none;
