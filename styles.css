@@ -1,19 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
-
 body {
-    background-color: #f8f9fa;
+
     font-family: 'Roboto', sans-serif;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    background: linear-gradient(
+        to bottom,
+        #f8f9fa 0%,
+        #f1f3f5 50%,   
+        /* #dee1e4 100% */
+        #dee1e4 75%,
+        #afb7bf 100%
+    );
+    margin: 0;
+    min-height: 100vh;
 }
 h1 {
     font-family: 'Poppins', sans-serif;
     font-weight: 400;  
     font-size: 3rem;    
-    margin: 0;         
 }
-
 h3{
     font-family: 'Rubik', sans-serif;
     margin: 1.5rem 0;
@@ -59,7 +66,6 @@ h4{
     border-radius: 0.25rem;
     background-color: #fff;
 }
-
 .btn-toggle {
     margin-bottom: 20px;
 }
@@ -125,48 +131,60 @@ h4{
     margin-top: 20px;
     margin-bottom: 10px;
 }
-
 /* WEEKDAY switcher */
 .toggle-container {
     margin-top: 1.25rem;
     font-size: 1.5rem;
     font-weight: 500;
     display: inline-flex;
-    border: 1px solid #ccc;
-    border-radius: 6px;
     overflow: hidden;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 6px; */
+    border: .5rem solid #fff ;
+    border-radius: .7rem;
+    background: #fff;
 }
 .toggle-btn {
+    /* color: #555; */
     color: #aaa;
-    background: #f8f9fa;
-    border: none;
-    padding: 0.5rem 1rem;
+    /* background: #f8f9fa; */
+    background: #fff;
+    /* border: none; */
+    padding: 0.5rem 0.5rem;
     cursor: pointer;
     font-weight: 500;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.3s, color 0.2s;
+    border: 1px solid #ccc;
+    margin: 0.2rem;
+    border-radius: .3rem;
 }
 .toggle-btn + .toggle-btn {
-    border-left: 1px solid #ccc;
+    border: 1px solid #ccc;
+    border-radius: .3rem;
+    /* border-left: 1px solid #ccc; */
+    /* border: none; */
 }
 /* .toggle-btn:hover {
     box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
 } */
 .toggle-btn--active {
-  background: #fff;
-  color: #000;
-  font-weight: 600;
+    background: #f8f9fa;
+    color: #000;
+    font-weight: 600;   
 }
 .toggle-btn:focus {
-  outline: none;
-}
-.toggle-container {
-  border-radius: .5rem;
+    outline: none;
 }
 .toggle-btn:first-child.toggle-btn--active {
-  border-top-left-radius: .5rem;
-  border-bottom-left-radius: .5rem;
+  /* border-top-left-radius: .5rem;
+  border-bottom-left-radius: .5rem; */
+    border: 1px solid #777;
+    border-radius: .3rem;
 }
 .toggle-btn:last-child.toggle-btn--active {
-  border-top-right-radius: .5rem;
-  border-bottom-right-radius: .5rem;
+  /* border-top-right-radius: .5rem;
+  border-bottom-right-radius: .5rem; */
+    color: #f36c3a;
+    border: 1px solid #777;
+    border-radius: .3rem;
 }

@@ -189,10 +189,10 @@ document.addEventListener('DOMContentLoaded', () => {
         <table class="table table-sm mb-0">
           <thead>
             <tr>
-              <th style="width: 10%;">Km</th>
-              <th style="width: 30%;">Station (JP)</th>
-              <th style="width: 30%;">Station (EN)</th>
-              <th style="width: 30%;">Time</th>
+            <th style="width: 10%;">Time</th>
+            <th style="width: 30%;">Station (EN)</th>
+            <th style="width: 50%;">Station (JP)</th>
+            <th style="width: 10%;">Km</th>
             </tr>
           </thead>
           <tbody>
@@ -200,10 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
       train.stops.forEach(stop => {
         tableHtml += `
           <tr>
-            <td>${stop.km}</td>
-            <td>${stop.stationJP}</td>
-            <td>${stop.stationEN}</td>
-            <td>${stop.time}</td>
+          <td>${stop.time}</td>
+          <td>${stop.stationEN}</td>
+          <td>${stop.stationJP}</td>
+          <td>${stop.km}</td>
           </tr>
         `;
       });
