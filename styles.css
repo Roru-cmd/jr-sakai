@@ -4,7 +4,7 @@ body {
 
     font-family: 'Roboto', sans-serif;
     padding-top: 2rem;
-    padding-bottom: 2rem;
+   
     background: linear-gradient(
         to bottom,
         #f8f9fa 0%,
@@ -187,4 +187,22 @@ h4{
     color: #f36c3a;
     border: 1px solid #777;
     border-radius: .3rem;
+}
+.footer {
+    font-family: 'Roboto', sans-serif;
+    color: #fff;
+}
+/* .footer-info {
+    font-size: 1rem;
+} */
+.footer-links span.fw-semibold {
+    display: block;
+    font-size: 0.65rem;
+}
+.footer-links small {
+    font-size: 0.6rem;
+}
+.footer-bg{
+    /* background: #31383e; */
+    background: #3E3E3E;
 }
