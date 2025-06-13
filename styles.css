@@ -1,5 +1,5 @@
 :root {
-  --footer-height: 16rem;
+  --footer-height: 10rem;
 }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
@@ -182,15 +182,17 @@ main {
 }
 /* ===Footer=== */
 footer {
-  background-color: #2c2f33;   
+  /* background-color: #2c2f33;    */
   color: #bdc3c7;    
   padding: 3rem 0;
 }
-/* footer .container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
-} */
+footer .container {
+    display: flex;
+    color: #95a5a6;
+    text-align: left;
+    align-items: start; 
+    justify-content: left;
+}
 footer h5 {
     font-size: .75rem;
     margin-bottom: 1rem;
@@ -227,9 +229,19 @@ footer .social-icons a {
 footer .social-icons a:hover {
     color: #f39c12;
 } */
-footer .copyright {
+/* .copyright {
+    display: flex;
     font-size: 0.75rem;
     color: #95a5a6;
+    justify-content: center;
+    text-align: center;
+    align-items: center;  
+} */
+footer .source {
+    max-width: 40rem;
+}
+footer .useful {
+    max-width: 30rem;
 }
 /* === Parallax overlay for footer === */
 footer {
