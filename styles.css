@@ -1,5 +1,5 @@
 :root {
-  --footer-height: 10rem;
+  --footer-height: 10.5rem;
 }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
@@ -237,12 +237,12 @@ footer .social-icons a:hover {
     text-align: center;
     align-items: center;  
 } */
-footer .source {
+/* footer .source {
     max-width: 40rem;
 }
 footer .useful {
-    max-width: 30rem;
-}
+    max-width: 35rem;
+} */
 /* === Parallax overlay for footer === */
 footer {
     position: fixed;
