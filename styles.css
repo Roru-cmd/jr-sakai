@@ -2,8 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 body {
     font-family: 'Roboto', sans-serif;
-   
-
     margin: 0;
     min-height: 100vh;  
 }
@@ -143,18 +141,13 @@ main {
     font-weight: 500;
     display: inline-flex;
     overflow: hidden;
-    /* border: 1px solid #ccc; */
-    /* border-radius: 6px; */
     border: .5rem solid #fff ;
     border-radius: .7rem;
     background: #fff;
 }
 .toggle-btn {
-    /* color: #555; */
     color: #aaa;
-    /* background: #f8f9fa; */
     background: #fff;
-    /* border: none; */
     padding: 0.5rem 0.5rem;
     cursor: pointer;
     font-weight: 500;
@@ -166,12 +159,7 @@ main {
 .toggle-btn + .toggle-btn {
     border: 1px solid #ccc;
     border-radius: .3rem;
-    /* border-left: 1px solid #ccc; */
-    /* border: none; */
 }
-/* .toggle-btn:hover {
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
-} */
 .toggle-btn--active {
     background: #f8f9fa;
     color: #000;
@@ -181,91 +169,66 @@ main {
     outline: none;
 }
 .toggle-btn:first-child.toggle-btn--active {
-  /* border-top-left-radius: .5rem;
-  border-bottom-left-radius: .5rem; */
     border: 1px solid #777;
     border-radius: .3rem;
 }
 .toggle-btn:last-child.toggle-btn--active {
-  /* border-top-right-radius: .5rem;
-  border-bottom-right-radius: .5rem; */
     color: #f36c3a;
     border: 1px solid #777;
     border-radius: .3rem;
 }
 /* ===Footer=== */
-/* .footer {
-    font-family: 'Roboto', sans-serif;
-    color: #fff;
-}
-.footer-links span.fw-semibold {
-    display: block;
-    font-size: 0.65rem;
-}
-.footer-links small {
-    font-size: 0.6rem;
-} */
-/* .footer-bg{ */
-    /* background: #31383e; */
-    /* background: #3E3E3E; */
-    
-    /* background: url(https://extendthemes.com/mesmerize/wp-content/themes/mesmerize-pro/assets/images/header-shapes/circles.png) center center/ cover no-repeat; */
-
-/* } */
-
-/* === Mezm footer === */
 footer {
   background-color: #2c2f33;   
   color: #bdc3c7;    
   padding: 3rem 0;
 }
-
 footer .container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
 }
 footer h5 {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  color: #ecf0f1; 
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: #ecf0f1; 
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 footer ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 footer ul li {
-  margin-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
 }
 footer ul li a {
-  color: #bdc3c7;
-  text-decoration: none;
-  transition: color 0.2s;
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: color 0.2s;
 }
 footer ul li a:hover {
-  color: #f39c12; 
+    color: #f39c12; 
 }
 footer .social-icons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 footer .social-icons a {
-  color: #bdc3c7;
-  font-size: 1.2rem;
+    color: #bdc3c7;
+    font-size: 1.2rem;
 }
 footer .social-icons a:hover {
-  color: #f39c12;
+    color: #f39c12;
 }
 footer .copyright {
-  grid-column: 1 / -1;         
-  text-align: center;
-  margin-top: 2rem;
-  font-size: 0.85rem;
-  color: #95a5a6;
+    grid-column: 1 / -1;         
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #95a5a6;
 }
 /* === Parallax overlay for footer === */
 footer {
