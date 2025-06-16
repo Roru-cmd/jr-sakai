@@ -240,12 +240,13 @@ footer .social-icons a:hover {
 /* === Parallax overlay for footer === */
 footer {
     position: fixed;
-    background-color: #2c2f33;
+    /* background-color: #2c2f33; */
     padding: 3rem 0;
     /* background: rgba(44,47,51,0.85);  */
     /* background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'); */
     /* background: url(https://extendthemes.com/mesmerize/wp-content/themes/mesmerize-pro/assets/images/header-shapes/circles.png) center center/ cover no-repeat; */
-    background-image: url('di.jpg');
+    /* background-image: url('di.jpg'); */
+    /* background-image: url('hex2.png'); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: left bottom;
@@ -260,6 +261,7 @@ footer::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(44,47,51,0.9); 
+    /* background: rgba(44,47,51,0.9);  */
+    background: rgba(33, 33, 47, 0.9); 
     z-index: -1;
 }
