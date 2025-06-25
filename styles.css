@@ -1,12 +1,13 @@
 :root {
-  --footer-height: 10.5rem;
+  --footer-height: 12rem;
 }
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap');
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
-    min-height: 100vh;  
+    min-height: 100vh;    
+    min-width: 320px; 
 }
 h1 {
     font-family: 'Poppins', sans-serif;
@@ -19,7 +20,6 @@ h4{
     font-size: 1.7em;
 }
 main {
-    padding-top: 2rem;
     background: linear-gradient(
         to bottom,
         #f8f9fa 0%,
@@ -31,9 +31,11 @@ main {
     z-index: 20;
     padding-bottom: 2rem;
     margin-bottom: var(--footer-height); /* same as footer's `height` */
+    /* background: url('https://www.brainpickings.org/wp-content/themes/brainpickings/images/bckgd_body.png'); */
 }
 .container{
-    max-width: 60rem;
+    max-width: 60rem;  
+    padding-top: 2rem;
 }
 .date,
 .fare-s-y {
@@ -175,21 +177,18 @@ main {
     border: 1px solid #777;
     border-radius: .3rem;
 }
-/* ===Footer=== */
-footer {
-  /* background-color: #2c2f33;    */
-  color: #bdc3c7;    
-  padding: 3rem 0;
-}
+
+/* === Footer === */
 footer .container {
     display: flex;
     color: #95a5a6;
     text-align: left;
     align-items: start; 
     justify-content: left;
+    padding-top: .05rem;
 }
 footer h5 {
-    font-size: .8rem;
+    font-size: .85rem;
     margin-bottom: 1rem;
     color: #ecf0f1; 
     text-transform: uppercase;
@@ -204,32 +203,38 @@ footer a {
     text-decoration: none;
 }
 footer ul li a {
-    font-size: .7rem;
+    font-size: .75rem;
     color: #bdc3c7;
-    transition: color 0.2s;
+    transition: color 0.1s;
     margin-bottom: 0.25rem;
+    line-height: 150%;
 }
 footer ul li a:hover {
     color: #f39c12; 
 }
-/* .copyright {
+.copyright {
     display: flex;
     font-size: 0.75rem;
     color: #95a5a6;
     justify-content: center;
     text-align: center;
     align-items: center;  
-} */
-/* === Parallax overlay for footer === */
+}
+/* === Parallax overlay for the footer === */
 footer {
+    min-width: 20rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
     position: fixed;
     padding: 3rem 0;
     /* background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'); */
-    background-image: url('circles.png');
-    background-size: cover;
+    /* background-image: url('circles.png'); */
+    /* background-size: cover;
     background-repeat: no-repeat;
     background-position: left bottom;
-    background-attachment: fixed; 
+    background-attachment: fixed;  */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -242,4 +247,33 @@ footer::before {
     inset: 0;
     background: rgba(67, 75, 83, 0.9); 
     z-index: -1;
+}
+
+ /* === Parallax overlay for the header === */
+header {
+    /* background: #f9f9f9; */
+    min-height: 12rem;
+    border-bottom: 1px solid #ced4da;
+    background-image: url('bckgd_dot.png');
+    background-position: left top;
+    background-attachment: fixed;
+    z-index: -1;
+}
+header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+header h1 {
+    text-shadow: 3px 4px rgba(black, .1);
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    text-align: center;
+    background: transparent; 
+    margin: 4.5rem 0;
+    pointer-events: none;    
 }
