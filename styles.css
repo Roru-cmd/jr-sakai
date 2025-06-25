@@ -177,7 +177,8 @@ main {
     border: 1px solid #777;
     border-radius: .3rem;
 }
-/* ===Footer=== */
+
+/* === Footer === */
 footer .container {
     display: flex;
     color: #95a5a6;
@@ -219,38 +220,6 @@ footer ul li a:hover {
     text-align: center;
     align-items: center;  
 }
-
-
- /* === Parallax overlay for the header === */
-header {
-    /* background: #f9f9f9; */
-    min-height: 12rem;
-    border-bottom: 1px solid #ced4da;
-    background-image: url('bckgd_dot.png');
-    background-position: left top;
-    background-attachment: fixed;
-    z-index: -1;
-    
-}
-header::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-}
-header h1 {
-    text-shadow: 3px 4px rgba(black, .1);
-    font-weight: bold;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    text-align: center;
-    background: transparent; 
-    margin: 4.5rem 0;
-    pointer-events: none;    
-}
-
 /* === Parallax overlay for the footer === */
 footer {
     min-width: 20rem;
@@ -280,3 +249,31 @@ footer::before {
     z-index: -1;
 }
 
+ /* === Parallax overlay for the header === */
+header {
+    /* background: #f9f9f9; */
+    min-height: 12rem;
+    border-bottom: 1px solid #ced4da;
+    background-image: url('bckgd_dot.png');
+    background-position: left top;
+    background-attachment: fixed;
+    z-index: -1;
+}
+header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+header h1 {
+    text-shadow: 3px 4px rgba(black, .1);
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    text-align: center;
+    background: transparent; 
+    margin: 4.5rem 0;
+    pointer-events: none;    
+}
