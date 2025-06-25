@@ -20,7 +20,6 @@ h4{
     font-size: 1.7em;
 }
 main {
-    /* background: url('https://www.brainpickings.org/wp-content/themes/brainpickings/images/bckgd_body.png'); */
     background: linear-gradient(
         to bottom,
         #f8f9fa 0%,
@@ -32,6 +31,7 @@ main {
     z-index: 20;
     padding-bottom: 2rem;
     margin-bottom: var(--footer-height); /* same as footer's `height` */
+    /* background: url('https://www.brainpickings.org/wp-content/themes/brainpickings/images/bckgd_body.png'); */
 }
 .container{
     max-width: 60rem;  
@@ -206,18 +206,19 @@ footer ul li a {
     color: #bdc3c7;
     transition: color 0.1s;
     margin-bottom: 0.25rem;
+    line-height: 150%;
 }
 footer ul li a:hover {
     color: #f39c12; 
 }
-/* .copyright {
+.copyright {
     display: flex;
     font-size: 0.75rem;
     color: #95a5a6;
     justify-content: center;
     text-align: center;
     align-items: center;  
-} */
+}
 
 
  /* === Parallax overlay for the header === */
@@ -226,12 +227,9 @@ header {
     min-height: 12rem;
     border-bottom: 1px solid #ced4da;
     background-image: url('bckgd_dot.png');
-    /* background: url('https://www.brainpickings.org/wp-content/themes/brainpickings/images/bckgd_body.png'); */
-    /* background-image: url('circles.png'); 
-    background-size: cover;
-    background-repeat: no-repeat;
     background-position: left top;
-    background-attachment: fixed; */
+    background-attachment: fixed;
+    z-index: -1;
     
 }
 header::before {
@@ -253,7 +251,6 @@ header h1 {
     pointer-events: none;    
 }
 
-
 /* === Parallax overlay for the footer === */
 footer {
     min-width: 20rem;
@@ -264,9 +261,8 @@ footer {
     position: fixed;
     padding: 3rem 0;
     /* background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80'); */
-    /* background-image: url('bckgd_dot.png'); */
-    /* background-image: url('circles.png');
-    background-size: cover;
+    /* background-image: url('circles.png'); */
+    /* background-size: cover;
     background-repeat: no-repeat;
     background-position: left bottom;
     background-attachment: fixed;  */
