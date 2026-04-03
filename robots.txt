@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://jr-sakai.vercel.app/sitemap.xml

@@ -4,9 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sakai Line</title>
+  <meta name="description" content="JR Sakai Line Train Schedule (Yonago ↔ Sakaiminato). Check departure and arrival times, as well as ticket prices. Schedules are available for weekdays and weekends.">
+  <meta name="keywords" content="JR Sakai Line, schedule, timetable, Kitaro, Tottori, Yonago, Sakaiminato, train, Japan">
+  <meta property="og:title" content="JR Sakai Line Timetable">
+  <meta property="og:description" content="Complete train schedule between Yonago and Sakaiminato, including fares and stops">
+  <meta property="og:url" content="https://jr-sakai.vercel.app/">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://jr-sakai.vercel.app/">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22256%22 height=%22256%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%234a36cf%22></rect><path fill=%22%23fff%22 d=%22M25.36 25.78L36 25.78L36 64.56Q36 69.60 33.09 72.26Q30.19 74.92 24.94 74.92L24.94 74.92Q23.68 74.92 21.96 74.75Q20.25 74.57 18.64 74.25Q17.03 73.94 16.05 73.52L16.05 73.52L17.17 66.59L20.60 66.59Q25.36 66.59 25.36 62.67L25.36 62.67L25.36 25.78ZM64.14 25.08L64.14 25.08Q70.51 25.08 74.47 26.37Q78.42 27.67 80.28 30.78Q82.13 33.90 82.13 39.43L82.13 39.43Q82.13 42.79 81.25 45.34Q80.38 47.90 78.35 49.44Q76.32 50.98 72.82 51.40L72.82 51.40L72.82 51.75Q74.08 51.96 75.44 52.73Q76.81 53.50 78 55.00Q79.19 56.51 79.75 59.03L79.75 59.03L83.95 74.08L72.68 74.08L68.97 59.38Q68.34 57 67.12 56.09Q65.89 55.18 63.72 55.18L63.72 55.18Q58.96 55.18 55.70 55.14Q52.45 55.11 50.24 55.04Q48.04 54.97 46.29 54.90L46.29 54.90L46.50 47.13L63.93 47.13Q66.73 47.13 68.38 46.53Q70.02 45.94 70.69 44.40Q71.35 42.86 71.35 40.13L71.35 40.13Q71.35 37.33 70.69 35.82Q70.02 34.32 68.38 33.72Q66.73 33.13 63.93 33.13L63.93 33.13Q57.35 33.13 52.80 33.20Q48.25 33.27 46.57 33.41L46.57 33.41L45.52 25.78Q48.46 25.43 51.05 25.29Q53.64 25.15 56.72 25.11Q59.80 25.08 64.14 25.08ZM45.52 25.78L56.09 25.78L56.09 74.08L45.52 74.08L45.52 25.78Z%22></path></svg>" />
+  <link rel="icon" 
+        type="image/svg+xml" 
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22256%22 height=%22256%22 viewBox=%220 0 100 100%22>
+          <rect width=%22100%22 height=%22100%22 rx=%2250%22 fill=%22%234a36cf%22></rect>
+          <path fill=%22%23fff%22 d=%22M25.36 25.78L36 25.78L36 64.56Q36 69.60 33.09 72.26Q30.19 74.92 24.94 74.92L24.94 74.92Q23.68 74.92 21.96 
+          74.75Q20.25 74.57 18.64 74.25Q17.03 73.94 16.05 73.52L16.05 73.52L17.17 66.59L20.60 66.59Q25.36 66.59 25.36 62.67L25.36 62.67L25.36 25.78ZM64.14 
+          25.08L64.14 25.08Q70.51 25.08 74.47 26.37Q78.42 27.67 80.28 30.78Q82.13 33.90 82.13 39.43L82.13 39.43Q82.13 42.79 81.25 45.34Q80.38 47.90 78.35 
+          49.44Q76.32 50.98 72.82 51.40L72.82 51.40L72.82 51.75Q74.08 51.96 75.44 52.73Q76.81 53.50 78 55.00Q79.19 56.51 79.75 59.03L79.75 59.03L83.95 74.08L72.68 
+          74.08L68.97 59.38Q68.34 57 67.12 56.09Q65.89 55.18 63.72 55.18L63.72 55.18Q58.96 55.18 55.70 55.14Q52.45 55.11 50.24 55.04Q48.04 54.97 46.29 54.90L46.29 
+          54.90L46.50 47.13L63.93 47.13Q66.73 47.13 68.38 46.53Q70.02 45.94 70.69 44.40Q71.35 42.86 71.35 40.13L71.35 40.13Q71.35 37.33 70.69 35.82Q70.02 34.32 
+          68.38 33.72Q66.73 33.13 63.93 33.13L63.93 33.13Q57.35 33.13 52.80 33.20Q48.25 33.27 46.57 33.41L46.57 33.41L45.52 25.78Q48.46 25.43 51.05 25.29Q53.64 
+          25.15 56.72 25.11Q59.80 25.08 64.14 25.08ZM45.52 25.78L56.09 25.78L56.09 74.08L45.52 74.08L45.52 25.78Z%22></path></svg>" />
   </head>
 <body>
   <header >
