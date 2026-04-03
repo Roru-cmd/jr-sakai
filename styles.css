@@ -20,13 +20,16 @@ h4{
     font-size: 1.7em;
 }
 main {
-    background: linear-gradient(
+    /* background: linear-gradient(
         to bottom,
         #f8f9fa 0%,
         #f1f3f5 50%,   
         #dee1e4 75%,
         #afb7bf 100%
-    );
+    );     */
+    background: 
+        #f8f9fa 
+   ;
     position: relative;
     z-index: 20;
     padding-bottom: 2rem;
