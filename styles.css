@@ -236,6 +236,10 @@ footer {
     background-repeat: no-repeat;
     background-position: left bottom;
     background-attachment: fixed;  */
+    /* -------------------------- */
+    background-image: url('bckgd_dot.png');
+    background-position: left top;
+    background-attachment: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
