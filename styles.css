@@ -37,6 +37,7 @@ main {
     max-width: 60rem;  
     padding-top: 2rem;
 }
+.date{font-size: 1.25rem;}
 .date,
 .fare-s-y {
     font-family: 'Roboto', sans-serif;
@@ -275,4 +276,21 @@ header h1 {
     background: transparent; 
     margin: 4.5rem 0;
     pointer-events: none;    
+}
+
+/* === Fare header layout === */
+.fare-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.fare-header h4 {
+    margin: 0;
+    flex-shrink: 0;
+}
+
+.fare-header .date {
+    margin: 0;
 }
