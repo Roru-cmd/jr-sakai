@@ -37,7 +37,7 @@ main {
     max-width: 60rem;  
     padding-top: 2rem;
 }
-.date{font-size: 1.25rem;}
+.date{font-size: 1.2rem;}
 .date,
 .fare-s-y {
     font-family: 'Roboto', sans-serif;
@@ -237,9 +237,10 @@ footer {
     background-position: left bottom;
     background-attachment: fixed;  */
     /* -------------------------- */
-    background-image: url('bckgd_dot.png');
-    background-position: left top;
+    background-image: url('bckgd_dot_y.png');
+    background-position: left bottom;
     background-attachment: fixed;
+    /* -------------------------- */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -250,7 +251,7 @@ footer::before {
     content: "";
     position: absolute;
     inset: 0;
-    background: rgba(67, 75, 83, 0.9); 
+    /* background: rgba(67, 75, 83, 0.9);  */
     z-index: -1;
 }
 
