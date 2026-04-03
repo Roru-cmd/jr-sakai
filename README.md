@@ -2,6 +2,8 @@
 
 A lightweight web application to display the JR Sakai Line timetable (Yonago ↔ Sakaiminato) in a browser. It parses a CSV export of the official timetable (including separate weekday/weekend blocks), shows departure/arrival times, duration, and station stops (both Japanese and English names). Users can toggle between weekday/weekend schedules and switch direction (Yonago → Sakaiminato or Sakaiminato → Yonago) with a single click.
 
+🌐 **[jr-sakai.vercel.app](https://jr-sakai.vercel.app/)**
+
 ---
 
 ## Features
