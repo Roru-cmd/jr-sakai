@@ -251,7 +251,6 @@ footer::before {
 
  /* === Parallax overlay for the header === */
 header {
-    /* background: #f9f9f9; */
     min-height: 12rem;
     border-bottom: 1px solid #ced4da;
     background-image: url('bckgd_dot.png');
@@ -266,7 +265,7 @@ header::before {
     z-index: -1;
 }
 header h1 {
-    text-shadow: 3px 4px rgba(black, .1);
+    text-shadow: 1px 1px 5px rgba(255, 255, 255, 0.95);
     font-weight: bold;
     position: fixed;
     top: 0;
